@@ -4,7 +4,17 @@
   "description": "Typescript Node.js Express backend for Product search.",
   "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev:watch": "nodemon --exec ts-node src/server.ts",
+    "dev:debug": "ts-node-dev --respawn --transpile-only --inspect src/server.ts",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "postbuild": "echo Build completed successfully!",
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'Linting not configured yet'",
+    "test": "echo 'Tests not configured yet'"
   },
   "author": "Ketav Chotaliya",
   "license": "ISC",
