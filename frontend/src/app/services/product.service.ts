@@ -1,22 +1,26 @@
-import { Injectable } from '@angular/core'; // ToDo explain
+import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpParams,
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError, retry } from 'rxjs'; // ToDO explain
+import { map, catchError, retry, tap } from 'rxjs/operators';
 
-import { ProductSearchResponse, Product } from '../models/product.model';
+import {
+  ProductSearchResponse,
+  Product,
+  ApiResponse,
+} from '../models/product.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root', // ToDO explain
+  providedIn: 'root',
 })
 export class ProductService {
   private readonly apiBaseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   /**
    * Search a Products by name
@@ -34,9 +38,24 @@ export class ProductService {
     const params = new HttpParams().set('search', searchTerm.trim());
 
     return this.http
-      .get<ProductSearchResponse>(`${this.apiBaseUrl}/products`, { params })
+      .get<ApiResponse<ProductSearchResponse>>(`${this.apiBaseUrl}/products`, {
+        params,
+      })
       .pipe(
-        map((response) => response.products || []),
+        tap((response) => {
+          // Debug the API response in raw format
+          console.log('RAW API Response: ', response);
+        }),
+        map((response) => {
+          let products: Product[] = [];
+          if (response?.data && Array.isArray(response.data.products)) {
+            products = response.data.products;
+          }
+
+          console.log('Mapped products: ', products);
+          return products;
+        }),
+        retry(2),
         catchError(this.handleError)
       );
   }
@@ -56,6 +75,10 @@ export class ProductService {
 
       // Handle specific error scenario
       switch (error.status) {
+        case 0:
+          errorMessage =
+            'Unable to connect to the server. Please check if there is Server is running.';
+          break;
         case 404:
           errorMessage = 'The requested resource was not found.';
           break;
