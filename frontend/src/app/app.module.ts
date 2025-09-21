@@ -10,6 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 
+import { productReducer } from './store';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -17,12 +19,15 @@ import { environment } from 'src/environments/environment';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    StoreModule.forRoot({}), // explain this
-
-    StoreDevtoolsModule.instrument({ // explain this
+    StoreModule.forRoot({
+      products: productReducer,
+    }),
+    StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
       autoPause: true,
+      trace: true,
+      traceLimit: 75,
     }),
   ],
   providers: [],
