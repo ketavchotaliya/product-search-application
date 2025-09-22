@@ -1,27 +1,65 @@
-# ProductSearchFrontend
+# Product Search Backend Application
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16.
+Angular App for with real-time product search functionality using NgRx state management.
 
-## Development server
+## Getting Started
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Prerequisites
 
-## Code scaffolding
+- Node.js (v18 or higher)
+- npm or yarn
+- Angular (v16)
+- Git
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Setup Instructions
 
-## Build
+- Clone this repository
+- `cd frontend`
+- `npm install`
+- `npm start` OR `ng serve` # Dev mode with auto-restart
+- `ng build` # Prepare build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Project structure
 
-## Running unit tests
+```
+frontend/src/app/
+├── models/              # TypeScript interfaces
+│   └── product.model.ts
+├── services/            # HTTP services
+│   └── product.service.ts
+├── store/               # NgRx state management
+│   ├── app.state.ts     # Application state interface
+│   ├── product.actions.ts   # Redux actions
+│   ├── product.reducer.ts   # State reducer
+│   ├── product.selectors.ts # State selectors
+│   └── index.ts         # Barrel exports
+├── app.component.ts     # Main component
+├── app.component.html   # Main template
+├── app.component.css    # Component styles
+└── app.module.ts        # Root module
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Features
 
-## Running end-to-end tests
+1. Real-time Search
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+   - 300ms debouncing to prevent excessive API calls
+   - Automatic search as user types
+   - Previous request cancellation using RxJS switchMap
 
-## Further help
+2. State Management (NgRx)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+   - Centralized state for products, loading, and errors
+   - Predictable state updates through actions and reducers
+   - Dev tools integration for debugging
+
+3. User Experience
+   - Loading indicators during API calls
+   - Error handling with user-friendly messages
+   - Search suggestions for better discoverability
+   - Responsive design for mobile and desktop
+
+### Data Flow
+```
+User Input → Debouncing → HTTP Request → NgRx Action → Reducer → State Update → UI Update
+```

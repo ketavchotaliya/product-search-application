@@ -36,7 +36,7 @@ class ProductService {
           total: filteredProducts.length,
           searchTerm: searchTerm.trim(),
         });
-      }, 5000); // 1000ms delay to simulate API call and show loading spinner
+      }, 5000); // 5000ms delay to simulate API call and show loading spinner
     });
   }
 
