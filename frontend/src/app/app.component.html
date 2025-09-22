@@ -1,0 +1,89 @@
+<!-- src/app/app.component.html -->
+<div class="container">
+  <header>
+    <h1>{{ title }}</h1>
+    <p>Search for products with real-time results</p>
+  </header>
+
+  <main>
+    <!-- Search Section -->
+    <div class="search-section">
+      <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Search products... (laptop, shirt, mouse, etc.)"
+        class="search-input"
+      />
+      <button 
+        *ngIf="searchControl.value" 
+        class="clear-btn"
+        (click)="clearSearch()"
+      >
+        Clear
+      </button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <div *ngIf="searchState$ | async as state">
+        
+        <!-- Loading -->
+        <div class="loading" *ngIf="state.loading">
+          <div class="spinner"></div>
+          <p>Searching for "{{ state.searchTerm }}"...</p>
+        </div>
+
+        <!-- Error -->
+        <div class="error" *ngIf="state.error && !state.loading">
+          <p>Error: {{ state.error }}</p>
+          <button (click)="clearError()">Dismiss</button>
+        </div>
+
+        <!-- Results -->
+        <div *ngIf="!state.loading && !state.error">
+          
+          <!-- Results Info -->
+          <div class="results-info" *ngIf="state.searchTerm">
+            <p *ngIf="state.products.length > 0">
+              Found {{ state.products.length }} product(s) for "{{ state.searchTerm }}"
+            </p>
+            <p *ngIf="state.products.length === 0">
+              No products found for "{{ state.searchTerm }}"
+            </p>
+          </div>
+
+          <!-- Products List -->
+          <div class="products" *ngIf="state.products.length > 0">
+            <div 
+              class="product-item" 
+              *ngFor="let product of state.products; trackBy: trackByProductId"
+            >
+              <h3>{{ product.name }}</h3>
+              <p class="category">{{ product.category }}</p>
+              <p class="price">${{ product.price }}</p>
+            </div>
+          </div>
+
+          <!-- Suggestions -->
+          <div class="suggestions" *ngIf="state.products.length === 0 && state.searchTerm">
+            <p>Try searching for:</p>
+            <button (click)="searchFor('laptop')">Laptop</button>
+            <button (click)="searchFor('shirt')">Shirt</button>
+            <button (click)="searchFor('mouse')">Mouse</button>
+            <button (click)="searchFor('shoes')">Shoes</button>
+            <button (click)="searchFor('jeans')">Jeans</button>
+          </div>
+
+          <!-- Welcome -->
+          <div class="welcome" *ngIf="!state.searchTerm">
+            <h2>Welcome to Product Search</h2>
+            <p>Start typing to search for products</p>
+            <p><small>Features: 300ms debouncing, NgRx state management</small></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
